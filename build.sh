@@ -7,8 +7,11 @@ set -e
 apt-get update
 apt-get install -y python3 build-essential
 
+# Create cache directory
+mkdir -p .next/cache
+
 # Install npm dependencies
-npm install
+npm ci
 
 # Build the Next.js application
 npm run build

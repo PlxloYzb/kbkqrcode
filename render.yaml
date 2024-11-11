@@ -2,7 +2,14 @@ services:
   - type: web
     name: kbk-qr-code-download-system
     env: node
-    buildCommand: npm install --production=false && npm install --save-dev typescript @types/node && npm run build
+    buildCommand: |
+      # 安装系统依赖
+      apt-get update && apt-get install -y python3 build-essential
+      # 创建缓存目录
+      mkdir -p .next/cache
+      # 安装依赖并构建
+      npm ci
+      npm run build
     startCommand: npm start
     nodeVersion: 18.x
     envVars:
@@ -10,9 +17,19 @@ services:
         value: production
       - key: ADMIN_PASSWORD
         sync: false
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      - key: NEXT_CACHE_DIR
+        value: ".next/cache"
     buildFilter:
       paths:
         - src/**
         - public/**
         - package.json
-        - next.config.js 
+        - next.config.js
+        - tsconfig.json
+        - .env.*
+    disk:
+      name: cache
+      mountPath: .next/cache
+      sizeGB: 1
