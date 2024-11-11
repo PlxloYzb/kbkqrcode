@@ -2,7 +2,7 @@ services:
   - type: web
     name: kbk-qr-code-download-system
     env: node
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --production=false && npm install --save-dev typescript @types/node && npm run build
     startCommand: npm start
     nodeVersion: 18.x
     envVars:
