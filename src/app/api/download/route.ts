@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 生成下载URL
+    // 生成下��URL
     const fileName = `${encodeURIComponent(name)}.png`;
     const downloadUrl = `/api/download/${fileName}`; // 修改为正确的API路由
 
