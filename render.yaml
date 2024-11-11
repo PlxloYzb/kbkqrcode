@@ -5,6 +5,8 @@ services:
     buildCommand: |
       # 安装系统依赖
       apt-get update && apt-get install -y python3 build-essential
+      # 创建数据目录
+      mkdir -p /opt/render/project/src/data
       # 创建缓存目录
       mkdir -p .next/cache
       # 安装依赖并构建
@@ -19,6 +21,8 @@ services:
         sync: false
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
+      - key: DB_PATH
+        value: "/opt/render/project/src/data"
     buildFilter:
       paths:
         - src/**
@@ -26,8 +30,7 @@ services:
         - package.json
         - next.config.js
         - tsconfig.json
-        - .env.*
     disk:
-      name: cache
-      mountPath: .next/cache
+      name: data
+      mountPath: /opt/render/project/src/data
       sizeGB: 1

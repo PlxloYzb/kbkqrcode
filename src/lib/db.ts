@@ -7,12 +7,24 @@ const dbDir = process.env.DB_PATH || path.join(process.cwd(), 'data');
 const dbPath = path.join(dbDir, 'downloads.db');
 
 // 确保目录存在
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true });
+try {
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
+  console.log('Database directory created:', dbDir);
+} catch (error) {
+  console.error('Error creating database directory:', error);
+  // 尝试使用备用路径
+  const fallbackDir = path.join(process.cwd(), 'data');
+  if (!fs.existsSync(fallbackDir)) {
+    fs.mkdirSync(fallbackDir, { recursive: true });
+  }
 }
 
 // 创建数据库连接
-const db = new Database(dbPath);
+const db = new Database(dbPath, {
+  verbose: console.log
+});
 
 // 初始化数据库表
 db.exec(`
