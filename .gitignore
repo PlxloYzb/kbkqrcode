@@ -41,7 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # SQLite database
-/data/*.db
+# /data/*.db
 
 # # 忽略图片文件但保留目录
 # public/images/*
