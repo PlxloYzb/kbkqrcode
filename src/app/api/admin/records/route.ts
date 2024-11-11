@@ -8,6 +8,9 @@ interface DownloadRecord {
   timestamp: number;
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const cookieStore = await cookies();

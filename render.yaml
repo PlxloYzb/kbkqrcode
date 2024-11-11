@@ -19,8 +19,6 @@ services:
         sync: false
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
-      - key: NEXT_CACHE_DIR
-        value: ".next/cache"
     buildFilter:
       paths:
         - src/**

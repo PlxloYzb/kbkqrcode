@@ -2,6 +2,9 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // 添加 OPTIONS 方法处理
 export async function OPTIONS() {
   return new NextResponse(null, {
@@ -38,7 +41,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 生成下��URL
+    // 生成下URL
     const fileName = `${encodeURIComponent(name)}.png`;
     const downloadUrl = `/api/download/${fileName}`; // 修改为正确的API路由
 

@@ -4,14 +4,9 @@ const path = require('path');
 const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['better-sqlite3'],
-    turbotrace: {
-      enabled: true,
-    },
-    optimizeCss: true,
-    forceSwcTransforms: true,
   },
-  distDir: '.next',
   output: 'standalone',
+  distDir: '.next',
   poweredByHeader: false,
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
