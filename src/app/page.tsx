@@ -23,25 +23,34 @@ const DownloadPage = () => {
   }, []);
 
   useEffect(() => {
-    // 监听记录操作的广播消息
-    const broadcastChannel = new BroadcastChannel('download_records');
-    broadcastChannel.onmessage = (event) => {
-      if (event.data.type === 'CLEAR_RECORDS') {
-        // 清空本地存储的下载历史
-        localStorage.removeItem('downloadHistory');
-      } else if (event.data.type === 'DELETE_RECORD') {
-        // 删除指定记录
-        const downloadHistory = localStorage.getItem('downloadHistory');
-        if (downloadHistory) {
-          const history = JSON.parse(downloadHistory);
-          delete history[event.data.name];
-          localStorage.setItem('downloadHistory', JSON.stringify(history));
-        }
+    let broadcastChannel: BroadcastChannel | null = null;
+    
+    try {
+      // 仅在浏览器环境下创建 BroadcastChannel
+      if (typeof window !== 'undefined') {
+        broadcastChannel = new BroadcastChannel('download_records');
+        broadcastChannel.onmessage = (event) => {
+          if (event.data.type === 'CLEAR_RECORDS') {
+            localStorage.removeItem('downloadHistory');
+          } else if (event.data.type === 'DELETE_RECORD') {
+            const downloadHistory = localStorage.getItem('downloadHistory');
+            if (downloadHistory) {
+              const history = JSON.parse(downloadHistory);
+              delete history[event.data.name];
+              localStorage.setItem('downloadHistory', JSON.stringify(history));
+            }
+          }
+        };
       }
-    };
+    } catch (error) {
+      console.warn('BroadcastChannel is not supported:', error);
+    }
 
     return () => {
-      broadcastChannel.close();
+      // 确保在组件卸载时正确关闭通道
+      if (broadcastChannel) {
+        broadcastChannel.close();
+      }
     };
   }, []);
 
@@ -50,7 +59,7 @@ const DownloadPage = () => {
     setError('');
   
     try {
-      // 请求下载授权和获取下载URL
+      // 添加错误处理和状态码检查
       const response = await fetch('/api/download', {
         method: 'POST',
         headers: {
@@ -62,7 +71,16 @@ const DownloadPage = () => {
         }),
       });
   
+      // 检查响应状态
+      if (response.status === 405) {
+        throw new Error('请求方法不允许');
+      }
+  
       const data: DownloadResponse = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message || '请求失败');
+      }
   
       if (!data.success) {
         throw new Error(data.message);
@@ -72,7 +90,13 @@ const DownloadPage = () => {
         throw new Error('下载链接无效');
       }
   
-      // 创建一个隐藏的下载链接，触发浏览器下载
+      // 使用 fetch 预检查文件是否存在
+      const fileCheck = await fetch(data.downloadUrl, { method: 'HEAD' });
+      if (!fileCheck.ok) {
+        throw new Error('文件不存在');
+      }
+  
+      // 创建下载链接
       const link = document.createElement('a');
       link.href = data.downloadUrl;
       link.download = `${name}.png`;
@@ -80,11 +104,12 @@ const DownloadPage = () => {
       link.click();
       document.body.removeChild(link);
   
-      // 关闭模态框并重置状态
+      // 成功后清理状态
       setShowModal(false);
       setName('');
       setError('');
     } catch (err) {
+      console.error('Download error:', err);
       setError(err instanceof Error ? err.message : '下载失败，请稍后重试');
     } finally {
       setLoading(false);

@@ -2,8 +2,29 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
 
+// 添加 OPTIONS 方法处理
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
+}
+
 export async function POST(request: Request) {
   try {
+    // 验证请求方法
+    if (request.method !== 'POST') {
+      return NextResponse.json(
+        { success: false, message: '方法不允许' },
+        { status: 405 }
+      );
+    }
+
     const { name, deviceId } = await request.json();
 
     if (!name || !deviceId) {

@@ -68,9 +68,15 @@ export default function AdminDashboard() {
         throw new Error('清空记录失败');
       }
 
-      // 广播清空记录的消息
-      const broadcastChannel = new BroadcastChannel('download_records');
-      broadcastChannel.postMessage({ type: 'CLEAR_RECORDS' });
+      try {
+        if (typeof window !== 'undefined') {
+          const broadcastChannel = new BroadcastChannel('download_records');
+          broadcastChannel.postMessage({ type: 'CLEAR_RECORDS' });
+          setTimeout(() => broadcastChannel.close(), 100);
+        }
+      } catch (error) {
+        console.warn('BroadcastChannel error:', error);
+      }
       
       // 刷新记录列表
       await fetchRecords();
@@ -99,13 +105,19 @@ export default function AdminDashboard() {
         throw new Error('删除记录失败');
       }
 
-      // 广播删除记录的消息
-      const broadcastChannel = new BroadcastChannel('download_records');
-      broadcastChannel.postMessage({ 
-        type: 'DELETE_RECORD',
-        name: nameToDelete
-      });
-      
+      try {
+        if (typeof window !== 'undefined') {
+          const broadcastChannel = new BroadcastChannel('download_records');
+          broadcastChannel.postMessage({ 
+            type: 'DELETE_RECORD',
+            name: nameToDelete
+          });
+          setTimeout(() => broadcastChannel.close(), 100);
+        }
+      } catch (error) {
+        console.warn('BroadcastChannel error:', error);
+      }
+
       // 刷新记录列表
       await fetchRecords();
       setShowDeleteModal(false);
