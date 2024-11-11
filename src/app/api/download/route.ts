@@ -1,4 +1,4 @@
-// src/app/api/request-download/route.ts
+// src/app/api/download/route.ts
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
 
@@ -17,14 +17,7 @@ export async function OPTIONS() {
 
 export async function POST(request: Request) {
   try {
-    // 验证请求方法
-    if (request.method !== 'POST') {
-      return NextResponse.json(
-        { success: false, message: '方法不允许' },
-        { status: 405 }
-      );
-    }
-
+    // 移除了请求方法检查，因为 Next.js 已经确保这是 POST 请求
     const { name, deviceId } = await request.json();
 
     if (!name || !deviceId) {
@@ -47,7 +40,7 @@ export async function POST(request: Request) {
 
     // 生成下载URL
     const fileName = `${encodeURIComponent(name)}.png`;
-    const downloadUrl = `/images/${fileName}`;
+    const downloadUrl = `/api/download/${fileName}`; // 修改为正确的API路由
 
     // 更新数据库记录
     db.prepare(
