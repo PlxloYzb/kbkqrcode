@@ -5,10 +5,20 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['better-sqlite3']
   },
+  distDir: '.next',
+  generateBuildId: async () => {
+    return 'build-' + Date.now();
+  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),
+    };
+    config.cache = {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
     };
     return config;
   },
