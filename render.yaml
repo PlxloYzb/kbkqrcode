@@ -5,8 +5,9 @@ services:
     buildCommand: |
       # 安装系统依赖
       apt-get update && apt-get install -y python3 build-essential
-      # 创建数据目录
+      # 创建数据目录并设置权限
       mkdir -p /opt/render/project/src/data
+      chmod 755 /opt/render/project/src/data
       # 创建缓存目录
       mkdir -p .next/cache
       # 安装依赖并构建
