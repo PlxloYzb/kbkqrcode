@@ -41,9 +41,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // 生成下URL
+    // 生成下载URL
     const fileName = `${encodeURIComponent(name)}.png`;
-    const downloadUrl = `/api/download/${fileName}`; // 修改为正确的API路由
+    const downloadUrl = `/images/${fileName}`; // 修改为直接访问 public 目录
 
     // 更新数据库记录
     db.prepare(

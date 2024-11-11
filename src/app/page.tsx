@@ -71,11 +71,6 @@ const DownloadPage = () => {
         }),
       });
   
-      // 检查响应状态
-      if (response.status === 405) {
-        throw new Error('请求方法不允许');
-      }
-  
       const data: DownloadResponse = await response.json();
   
       if (!response.ok) {
@@ -88,12 +83,6 @@ const DownloadPage = () => {
   
       if (!data.downloadUrl) {
         throw new Error('下载链接无效');
-      }
-  
-      // 使用 fetch 预检查文件是否存在
-      const fileCheck = await fetch(data.downloadUrl, { method: 'HEAD' });
-      if (!fileCheck.ok) {
-        throw new Error('文件不存在');
       }
   
       // 创建下载链接

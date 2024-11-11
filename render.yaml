@@ -8,6 +8,9 @@ services:
       # 创建数据目录并设置权限
       mkdir -p /opt/render/project/src/data
       chmod 755 /opt/render/project/src/data
+      # 创建图片目录
+      mkdir -p public/images
+      chmod 755 public/images
       # 创建缓存目录
       mkdir -p .next/cache
       # 安装依赖并构建
