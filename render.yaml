@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: kbk-qr-code-download-system
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    nodeVersion: 18.x
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ADMIN_PASSWORD
+        sync: false
+    buildFilter:
+      paths:
+        - src/**
+        - public/**
+        - package.json
+        - next.config.js 

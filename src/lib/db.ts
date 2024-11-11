@@ -2,19 +2,19 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 
-// Database file path
-const dbDir = path.join(process.cwd(), 'data');
+// 使用环境变量控制数据库路径
+const dbDir = process.env.DB_PATH || path.join(process.cwd(), 'data');
 const dbPath = path.join(dbDir, 'downloads.db');
 
-// Ensure the directory exists
+// 确保目录存在
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
 
-// Create database connection
+// 创建数据库连接
 const db = new Database(dbPath);
 
-// Initialize database table
+// 初始化数据库表
 db.exec(`
   CREATE TABLE IF NOT EXISTS downloads (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
